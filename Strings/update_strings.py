@@ -152,22 +152,22 @@ site.pages[itemtable].save(
 if VER == "DST":
     shutil.rmtree("temp")
 
-exist = {page.name for page in site.allpages()}
-need = {line[0]: f"<tr><td>{line[0]}</td><td>[[{line[1]}]]</td></tr>" for line in tqdm(
-    new_itemtable) if not line[1] in exist and not '{' in line[1] and not r'%s' in line[1] and not r'\n' in line[1]}
-pagetext = f"""\
-从 chinese_s.po 的 STRING.NAMES 中自动提取的全部缺失页面，含有废弃的prefab及其翻译（例如：anchor_sketch），因此不代表其中的每个页面都需要创建。
+    exist = {page.name for page in site.allpages()}
+    no_need = {"“月亮” 草图", "沐浴球图纸", "月蛾草图", "???", "月光斧蓝图", "空无一物", "未使用", "环形山地皮蓝图", "未知", "迷你冰山", "融化的迷你冰山"}
+    exist.update(no_need)
+    need = {line[0]: f"<tr><td>{line[0]}</td><td>[[{line[1]}]]</td></tr>" for line in tqdm(
+        new_itemtable) if not line[1] in exist and not '{' in line[1] and not r'%s' in line[1] and not r'\n' in line[1]}
+    pagetext = f"""\
+从 chinese_s.po 的 STRING.NAMES 中自动提取的全部缺失页面，可能含有废弃的prefab及其翻译（例如：anchor_sketch），因此不代表其中的每个页面都需要创建。
 <table class="wikitable sortable mw-collapsible mw-collapsed">
 <tr><th>prefab</th><th>页面</th></tr>
 {"".join([need[id] for id in sorted(need.keys()) if "quagmire" not in id])}
 </table>
-"""
-if VER == "DST":
-    pagetext += f"""\
+
 <table class="wikitable sortable mw-collapsible mw-collapsed">
 <tr><th>暴食prefab</th><th>页面</th></tr>
 {"".join([need[id] for id in sorted(need.keys()) if "quagmire" in id])}
 </table>
 """
-site.pages['Project:施工计划/缺失页面' if VER == "DST" else 'Project:施工计划/缺失页面/单机版'].save(
-    pagetext, summary=f"Extract data from patch {ver}" if VER == "DST" else "")
+    site.pages['Project:施工计划/缺失页面'].save(
+        pagetext, summary=f"Extract data from patch {ver}")
